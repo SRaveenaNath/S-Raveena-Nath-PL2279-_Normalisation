@@ -1,0 +1,192 @@
+create database InventoryManagementSystemDB
+use InventoryManagementSystemDB
+
+CREATE TABLE Regions (
+    Region_ID INT PRIMARY KEY,
+    Region_Name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Warehouses (
+    Warehouse_ID INT PRIMARY KEY,
+    Warehouse_Name VARCHAR(100) NOT NULL,
+    Location VARCHAR(255),
+    Region_ID INT,
+    FOREIGN KEY (Region_ID) REFERENCES Regions(Region_ID)
+);
+
+
+CREATE TABLE Product_Categories (
+    Category_ID INT PRIMARY KEY,
+    Category_Name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Products (
+    Product_ID INT PRIMARY KEY,
+    Product_Name VARCHAR(100) NOT NULL,
+    Category_ID INT,
+    Price DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (Category_ID) REFERENCES Product_Categories(Category_ID)
+);
+
+
+CREATE TABLE Inventories (
+    Inventory_ID INT PRIMARY KEY,
+    Product_ID INT,
+    Warehouse_ID INT,
+    Quantity INT NOT NULL,
+    FOREIGN KEY (Product_ID) REFERENCES Products(Product_ID),
+    FOREIGN KEY (Warehouse_ID) REFERENCES Warehouses(Warehouse_ID)
+);
+
+CREATE TABLE Customers (
+    Customer_ID INT PRIMARY KEY,
+    Customer_Name VARCHAR(100) NOT NULL,
+    Contact_Number VARCHAR(15) NOT NULL,
+    Email VARCHAR(100),
+    Address VARCHAR(255),
+    Credit_Limit DECIMAL(10, 2) NOT NULL
+);
+
+CREATE TABLE Orders (
+    Order_ID INT PRIMARY KEY,
+    Customer_ID INT,
+    Order_Date DATE NOT NULL,
+    Total_Amount DECIMAL(10, 2) NOT NULL,
+    Status VARCHAR(50),
+    FOREIGN KEY (Customer_ID) REFERENCES Customers(Customer_ID)
+);
+
+CREATE TABLE Order_Details (
+    Order_Detail_ID INT PRIMARY KEY,
+    Order_ID INT,
+    Product_ID INT,
+    Quantity INT NOT NULL,
+    Subtotal DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (Order_ID) REFERENCES Orders(Order_ID),
+    FOREIGN KEY (Product_ID) REFERENCES Products(Product_ID)
+);
+
+CREATE TABLE Employees (
+    Employee_ID INT PRIMARY KEY,
+    Employee_Name VARCHAR(100) NOT NULL,
+    Contact_Number VARCHAR(15),
+    Email VARCHAR(100),
+    Assigned_Orders INT
+);
+
+CREATE TABLE Order_Tracking (
+    Tracking_ID INT PRIMARY KEY,
+    Employee_ID INT,
+    Order_ID INT,
+    Tracking_Status VARCHAR(50),
+    FOREIGN KEY (Employee_ID) REFERENCES Employees(Employee_ID),
+    FOREIGN KEY (Order_ID) REFERENCES Orders(Order_ID)
+);
+
+CREATE TABLE Suppliers (
+    Supplier_ID INT PRIMARY KEY,
+    Supplier_Name VARCHAR(100) NOT NULL,
+    Contact_Number VARCHAR(15),
+    Address VARCHAR(255),
+    Email VARCHAR(100)
+);
+
+INSERT INTO Regions (Region_ID, Region_Name)
+VALUES 
+(1, 'North America'),
+(2, 'Europe'),
+(3, 'Asia'),
+(4, 'Australia');
+INSERT INTO Warehouses (Warehouse_ID, Warehouse_Name, Location, Region_ID)
+VALUES 
+(1, 'North Warehouse', 'New York, USA', 1),
+(2, 'East Warehouse', 'Berlin, Germany', 2),
+(3, 'Central Warehouse', 'Mumbai, India', 3),
+(4, 'South Warehouse', 'Sydney, Australia', 4);
+
+INSERT INTO Product_Categories (Category_ID, Category_Name)
+VALUES 
+(1, 'Electronics'),
+(2, 'Furniture'),
+(3, 'Clothing'),
+(4, 'Groceries');
+
+INSERT INTO Products (Product_ID, Product_Name, Category_ID, Price)
+VALUES 
+(1, 'Laptop', 1, 1200.00),
+(2, 'Smartphone', 1, 800.00),
+(3, 'Sofa', 2, 450.00),
+(4, 'Dining Table', 2, 300.00),
+(5, 'T-Shirt', 3, 25.00),
+(6, 'Jeans', 3, 50.00),
+(7, 'Milk', 4, 1.50),
+(8, 'Bread', 4, 2.00);
+
+INSERT INTO Inventories (Inventory_ID, Product_ID, Warehouse_ID, Quantity)
+VALUES 
+(1, 1, 1, 100),
+(2, 2, 1, 200),
+(3, 3, 2, 50),
+(4, 4, 2, 30),
+(5, 5, 3, 500),
+(6, 6, 3, 400),
+(7, 7, 4, 1000),
+(8, 8, 4, 800);
+
+INSERT INTO Customers (Customer_ID, Customer_Name, Contact_Number, Email, Address, Credit_Limit)
+VALUES 
+(1, 'Tina', '7788994562', 'Tina@gmail.com', 'abc apartment, New York, USA', 5000.00),
+(2, 'Mina', '85225874169', 'Mina@gmail.com', 'abc apartment, Berlin, Germany', 3000.00),
+(3, 'Nina', '8559974152', 'Nina@gmail.com', 'abc apartment, India', 7000.00),
+(4, 'Raveena', '9517538524', 'Raveena@gmail.com', 'abc apartment, tvm, India', 4000.00);
+
+INSERT INTO Orders (Order_ID, Customer_ID, Order_Date, Total_Amount, Status)
+VALUES 
+(1, 1, '2024-06-01', 2000.00, 'Shipped'),
+(2, 2, '2024-06-02', 750.00, 'Pending'),
+(3, 3, '2024-06-03', 1200.00, 'Delivered'),
+(4, 4, '2024-06-04', 300.00, 'Processing');
+
+INSERT INTO Order_Details (Order_Detail_ID, Order_ID, Product_ID, Quantity, Subtotal)
+VALUES 
+(1, 1, 1, 1, 1200.00),
+(2, 1, 2, 1, 800.00),
+(3, 2, 5, 10, 250.00),
+(4, 2, 6, 5, 250.00),
+(5, 3, 3, 2, 900.00),
+(6, 3, 4, 1, 300.00),
+(7, 4, 7, 100, 150.00),
+(8, 4, 8, 75, 150.00);
+
+INSERT INTO Employees (Employee_ID, Employee_Name, Contact_Number, Email, Assigned_Orders)
+VALUES 
+(1, 'Michael', '7788994562', 'michael@gmail.com', 1),
+(2, 'Jin', '7788994574', 'Jin@gmail.com', 2),
+(3, 'Reshma', '7788994258', 'Reshma@gmail.com', 3),
+(4, 'Dhanya', '9888994562', 'Dhanya@gmail.com', 4);
+
+INSERT INTO Order_Tracking (Tracking_ID, Employee_ID, Order_ID, Tracking_Status)
+VALUES 
+(1, 1, 1, 'In Transit'),
+(2, 2, 2, 'Pending'),
+(3, 3, 3, 'Delivered'),
+(4, 4, 4, 'Processing');
+
+INSERT INTO Suppliers (Supplier_ID, Supplier_Name, Contact_Number, Address, Email)
+VALUES 
+(1, 'Tech Supplies Inc.', '9888994562', 'xyz apartments, New York, USA', 'contact@techsupplies.com'),
+(2, 'Home Furnishings Ltd.', '9888994544', 'xyz apartments, Berlin, Germany', 'info@homefurnishings.com'),
+(3, 'Clothing World', '9888994511', 'xyz apartments, India', 'sales@clothingworld.com'),
+(4, 'Food Distributors', '9888994588', 'xyz apartments, Sydney, Australia', 'support@fooddistributors.com');
+
+SELECT * FROM Regions;
+SELECT * FROM Warehouses;
+SELECT * FROM Product_Categories;
+SELECT * FROM Products;
+SELECT * FROM Inventories;
+SELECT * FROM Customers;
+SELECT * FROM Orders;
+SELECT * FROM Order_Details;
+SELECT * FROM Employees;
+SELECT * FROM Order_Tracking;
+SELECT * FROM Suppliers;
